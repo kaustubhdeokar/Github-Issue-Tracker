@@ -26,13 +26,20 @@
     <div class="container">
         <h1 class="title">Organisations</h1>
 
+        <a href="/organisation/add">Click to Add Organisation </a><br><br>
+        <a href="/organisation">Navigate to All Organisations </a><br><br>
         <tbody>
 
             <tr th:each="organisation:${organisations}">
                 <td>
-                    <a th:href="@{/organisation/{organisationId}(organisationId=${organisation.id})}">
+                    <a th:href="@{/organisation/{id}(id=${organisation.id.asString()})}">
                         <span th:text="${organisation.name}"></span>
                     </a>
+                    <div th:if ="${#lists.size(organisations) == 1}">
+                        <a th:href="@{/project/add/{name}(name=${organisation.name})}">
+                            <span>Add Project</span>
+                        </a>
+                    </div>
                 </td>
                 <br>
             </tr>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Organisation</title>
+</head>
+<body>
+<div class="container">
+
+    <form id="user-form"
+          th:object="${organisation}"
+          th:action="@{/organisation/create}" method="post">
+        <h1>Create Organisation</h1>
+
+        <div class="form-group">
+            <label for="organisation">Organisation Name</label> <br><br>
+            <input type="text" field="*{name}" class="form-control" name="name" id="organisation" aria-describedby="emailHelp" placeholder="Enter name">
+            <input type="submit" value="Submit">
+        </div>
+
+    </form>
+
+</div>
+</body>
+</html>

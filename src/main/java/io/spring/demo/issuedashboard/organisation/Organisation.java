@@ -1,31 +1,24 @@
 package io.spring.demo.issuedashboard.organisation;
 
+import io.github.wimdeblauwe.jpearl.AbstractVersionedEntity;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
-@Entity
-public class Organisation {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+@Entity(name="ORGANISATION")
+public class Organisation extends AbstractVersionedEntity<OrganisationId> {
 
     private String name;
 
-    public Organisation() {
+    protected Organisation() {
     }
 
-    public Organisation(String name) {
+    public Organisation(OrganisationId organisationId, String name) {
+        super(organisationId);
         this.name = name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {

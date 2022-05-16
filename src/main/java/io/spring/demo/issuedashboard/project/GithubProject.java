@@ -1,16 +1,12 @@
 package io.spring.demo.issuedashboard.project;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.io.Serializable;
+import javax.persistence.*;
 
-@Entity
-public class GithubProject implements Serializable {
+@Entity(name="GITHUB_PROJECT")
+public class GithubProject{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String orgName;

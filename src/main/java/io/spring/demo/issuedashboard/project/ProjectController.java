@@ -1,31 +1,31 @@
-package io.spring.demo.issuedashboard.events;
+package io.spring.demo.issuedashboard.project;
 
+import io.spring.demo.issuedashboard.events.DashboardEntry;
 import io.spring.demo.issuedashboard.github.GithubClient;
 import io.spring.demo.issuedashboard.github.RepositoryEvent;
-import io.spring.demo.issuedashboard.project.GithubProject;
-import io.spring.demo.issuedashboard.project.GithubProjectRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Controller
-public class EventsController {
+public class ProjectController {
 
     private final GithubProjectRepository repository;
     private final GithubClient githubClient;
+    private final ProjectService service;
 
-    public EventsController(GithubProjectRepository repository, GithubClient githubClient) {
+    public ProjectController(GithubProjectRepository repository, GithubClient githubClient, ProjectService service) {
         this.repository = repository;
         this.githubClient = githubClient;
+        this.service = service;
     }
 
-    @GetMapping("/events/{repoName}")
+    @GetMapping("/project/{repoName}")
     @ResponseBody
     public RepositoryEvent[] fetchEvents(@PathVariable String repoName) {
         GithubProject project = repository.findByRepoName(repoName);
@@ -38,6 +38,27 @@ public class EventsController {
         model.addAttribute("projects",this.repository.findAll());
         return "admin";
     }
+
+    @GetMapping("/project/add/{name}")
+    public String addProject(@PathVariable("name") String name, Model model) {
+        System.out.println("Inside project add.");
+        //organisation name - name,
+        model.addAttribute("orgName",name);
+        model.addAttribute("github_project",new ProjectData());
+        //form project name -> user will add.
+        return "projectadd";
+    }
+
+    @PostMapping("/project/create")
+    public String createProject(@ModelAttribute("github_project") ProjectData githubProject,
+                                BindingResult bindingResult, Model model){
+        System.out.println("Here in project post");
+        String repoName = githubProject.getRepoName();
+        String orgName = githubProject.getOrgName();
+        service.addProject(orgName,repoName);
+        return "redirect:/organisation";
+    }
+
 
     @GetMapping("/")
     public String dashboard(Model model){

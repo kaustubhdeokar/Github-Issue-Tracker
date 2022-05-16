@@ -6,8 +6,11 @@ import io.spring.demo.issuedashboard.project.GithubProject;
 import io.spring.demo.issuedashboard.project.GithubProjectRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,9 +36,23 @@ public class OrganisationController {
         return "organisation";
     }
 
+    @GetMapping("/organisation/add")
+    public String redirectToAddOrganisation( Model model){
+        model.addAttribute("organisation",new OrganisationData());
+        return "organisationadd";
+    }
+
+    @PostMapping("/organisation/create")
+    public String addOrganisation(@ModelAttribute("organisation") OrganisationData organisation,
+                                  BindingResult bindingResult, Model model){
+        organisationService.createOrganisation(organisation.getName());
+        return "redirect:/organisation";
+    }
+
+
     @GetMapping("/organisation/{id}")
-    public String getAllOrganisationById(@PathVariable("id") String organisationId, Model model) {
-        Organisation organisationById = organisationService.getOrganisationById(Long.parseLong(organisationId));
+    public String getAllOrganisationById(@PathVariable("id") OrganisationId organisationId, Model model) {
+        Organisation organisationById = organisationService.getOrganisationById(organisationId);
         model.addAttribute("organisations",organisationById);
 
         Iterable<GithubProject> projects = this.projectRepository.findAll();

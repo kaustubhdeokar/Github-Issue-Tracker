@@ -9,3 +9,15 @@ manage schema of database. (to run migrations).
 	flyway requires a migration configuration.
 
 	it creates a table schema_version in the database.
+
+
+
+Root Controller(/)
+
+    Navigate to all organisations /organisation
+    All projects.
+
+Organisation.
+    /organisation - GET - all organisation.
+    /organisation/<id> - organisation and projects assigned to them.
+    /organisation/add -> /organisation/create
