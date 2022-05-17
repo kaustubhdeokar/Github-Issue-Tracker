@@ -3,6 +3,7 @@ package io.spring.demo.issuedashboard.project;
 import io.spring.demo.issuedashboard.events.DashboardEntry;
 import io.spring.demo.issuedashboard.github.GithubClient;
 import io.spring.demo.issuedashboard.github.RepositoryEvent;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +41,7 @@ public class ProjectController {
     }
 
     @GetMapping("/project/add/{name}")
+    @Secured("ROLE_ADMIN")
     public String addProject(@PathVariable("name") String name, Model model) {
         System.out.println("Inside project add.");
         //organisation name - name,

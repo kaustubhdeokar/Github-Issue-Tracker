@@ -40,7 +40,10 @@ public class GithubClient {
 
     public List<RepositoryEvent> fetchEventsAsList(String orgName, String repoName) {
 
-        return Arrays.asList(fetchEvents(orgName,repoName).getBody());
+        ResponseEntity<RepositoryEvent[]> responseEntity = fetchEvents(orgName, repoName);
+        RepositoryEvent[] body = responseEntity.getBody();
+        RepositoryEvent[] repositoryEvents = Arrays.copyOfRange(body, 0, 10);
+        return Arrays.asList(repositoryEvents);
     }
 
 

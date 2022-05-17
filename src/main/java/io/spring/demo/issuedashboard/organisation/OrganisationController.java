@@ -4,6 +4,7 @@ import io.spring.demo.issuedashboard.events.DashboardEntry;
 import io.spring.demo.issuedashboard.github.GithubClient;
 import io.spring.demo.issuedashboard.project.GithubProject;
 import io.spring.demo.issuedashboard.project.GithubProjectRepository;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,14 +38,15 @@ public class OrganisationController {
     }
 
     @GetMapping("/organisation/add")
-    public String redirectToAddOrganisation( Model model){
-        model.addAttribute("organisation",new OrganisationData());
+    @Secured("ROLE_ADMIN")
+    public String redirectToAddOrganisation(Model model) {
+        model.addAttribute("organisation", new OrganisationData());
         return "organisationadd";
     }
 
     @PostMapping("/organisation/create")
     public String addOrganisation(@ModelAttribute("organisation") OrganisationData organisation,
-                                  BindingResult bindingResult, Model model){
+                                  BindingResult bindingResult, Model model) {
         organisationService.createOrganisation(organisation.getName());
         return "redirect:/organisation";
     }
@@ -53,16 +55,16 @@ public class OrganisationController {
     @GetMapping("/organisation/{id}")
     public String getAllOrganisationById(@PathVariable("id") OrganisationId organisationId, Model model) {
         Organisation organisationById = organisationService.getOrganisationById(organisationId);
-        model.addAttribute("organisations",organisationById);
+        model.addAttribute("organisations", organisationById);
 
         Iterable<GithubProject> projects = this.projectRepository.findAll();
 
         List<DashboardEntry> entries = StreamSupport.stream(projects.spliterator(), true).
-                filter(project->project.getOrgName().equals(organisationById.getName())).
+                filter(project -> project.getOrgName().equals(organisationById.getName())).
                 map(p -> new DashboardEntry(p, this.githubClient.fetchEventsAsList(p.getOrgName(), p.getRepoName()))).
                 collect(Collectors.toList());
 
-        model.addAttribute("entries",entries);
+        model.addAttribute("entries", entries);
 
         return "organisation";
     }
